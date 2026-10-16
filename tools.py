@@ -12,7 +12,7 @@ def _get(url: str, params: dict, retries: int = 2) -> dict:
     last = None
     for _ in range(retries + 1):
         try:
-            r = httpx.get(url, params=params, timeout=TIMEOUT)
+            r = httpx.get(url, params=params, timeout=TIMEOUT, follow_redirects=True)
             r.raise_for_status()
             return r.json()
         except (httpx.TimeoutException, httpx.TransportError) as e:
@@ -39,7 +39,7 @@ def get_weather(city: str) -> dict:
 
 
 def convert_currency(amount: float, from_currency: str, to_currency: str) -> dict:
-    data = _get("https://api.frankfurter.app/latest", {
+    data = _get("https://api.frankfurter.dev/v1/latest", {
         "amount": amount, "from": from_currency.upper(), "to": to_currency.upper(),
     })
     rates = data.get("rates", {})
